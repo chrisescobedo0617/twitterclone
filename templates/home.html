@@ -1,0 +1,67 @@
+{% extends "base.html" %} {% block content %}
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <a href="#" class="navbar-brand">Twitter</a>
+  <ul class="navbar-nav">
+    <li class="nav_item">
+      <a href="/" class="nav-link">Home</a>
+    </li>
+    <li class="nav_item">
+      <a href="/submit/" class="nav-link">Tweet</a>
+    </li>
+    <li class="nav_item">
+      <a href="/logout/" class="nav-link">Logout</a>
+    </li>
+    <li class="nav_item">
+      <a href="/notification/" class="nav-link"
+        >Notifications: {% if notification_count != 0 %} {{notification_count}}
+        {% endif %}
+      </a>
+    </li>
+    <li class="nav_item">
+      <a href="/user/{{request.user.username}}" class="nav-link">My Profile</a>
+    </li>
+  </ul>
+</nav>
+
+<div class="container" style="display: flex; margin-top: 2%">
+  <div class="card" style="width: 20%; padding: 1%; height: 10%">
+    <div>
+      <h3>{{request.user.display_name}}</h3>
+      <p>{{request.user.username}}</p>
+      <p>Tweets: {{ user_tweets }}</p>
+      <p>Following: {{ following_count }}</p>
+    </div>
+  </div>
+  <div style="padding: 1%">
+    <h1 style="margin-bottom: 3%">What's poppin, {{request.user.username}}?</h1>
+    {% for tweet in tweets%} {% if tweet.author in following_list %}
+    <div class="card" style="padding: 1%; margin-bottom: 3%">
+      <h5 class="card-title">
+        <a href="/user/{{tweet.author.username}}/">{{tweet.author.username}}</a>
+        -
+        <a href="/tweet/{{tweet.id}}/">{{tweet.post_date}}</a>
+      </h5>
+      <p>{{tweet.text}}</p>
+    </div>
+    {% elif tweet.author.username == request.user.username %}
+    <div class="card" style="padding: 1%; margin-bottom: 3%">
+      <h5 class="card-title">
+        <a href="/user/{{tweet.author.username}}/">{{tweet.author.username}}</a>
+        -
+        <a href="/tweet/{{tweet.id}}/">{{tweet.post_date}}</a>
+      </h5>
+      <p>{{tweet.text}}</p>
+    </div>
+    {% if not tweets %}
+    <div class="card" style="padding: 1%; margin-bottom: 3%">
+      <h5 class="card-title">Oh no! You don't have any tweets to see!</h5>
+      <p>
+        Either follow more people or post a new
+        <a href="/submit/">tweet</a>!
+      </p>
+    </div>
+    {% endif %} {% endif %} {% endfor %}
+  </div>
+</div>
+
+{% endblock %}
