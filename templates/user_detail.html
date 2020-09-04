@@ -21,6 +21,7 @@
     <li class="nav_item">
       <a href="/" class="nav-link">Home</a>
     </li>
+    {% if request.user.is_authenticated %}
     <li class="nav_item">
       <a href="/submit/" class="nav-link">Tweet</a>
     </li>
@@ -28,11 +29,16 @@
       <a href="/logout/" class="nav-link">Logout</a>
     </li>
     <li class="nav_item">
-      <a href="/notification/" class="nav-link">Notifications: 0</a>
+      <a href="/notification/" class="nav-link"
+        >{% if notification_count != 0 %} Notifications:
+        <span class="badge badge-success">{{notification_count}}</span>
+        {% else %} Notifications {% endif %}</a
+      >
     </li>
     <li class="nav_item">
       <a href="" class="nav-link">My Profile</a>
     </li>
+    {% endif %}
   </ul>
 </nav>
 
@@ -50,6 +56,8 @@
         role="button"
         >Unfollow</a
       >
+      {% elif not request.user.is_authenticated %}
+      <span></span>
       {%else%}
       <a
         class="btn btn-outline-primary"

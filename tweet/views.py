@@ -41,9 +41,13 @@ def add_tweet(request):
 
 def tweet_view(request, tweet_id):
     user_tweets = 0
+    notifications = 0
     my_tweet = Tweet.objects.filter(id=tweet_id).first()
     following_count = len(MyUser.objects.filter(
         id=my_tweet.author.id).first().following.all())
+    if request.user.is_authenticated:
+        notifications = len(Notification.objects.filter(
+            user__id=request.user.id, seen=False))
     if my_tweet:
         user_tweets = len(Tweet.objects.filter(author=my_tweet.author.id))
-    return render(request, 'tweet_detail.html', {'tweet': my_tweet, 'tweet_num': user_tweets, 'following_count': following_count})
+    return render(request, 'tweet_detail.html', {'tweet': my_tweet, 'tweet_num': user_tweets, 'following_count': following_count, 'notification_count': notifications})

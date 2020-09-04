@@ -22,6 +22,7 @@ def index(request):
 
 
 def user_detail(request, username):
+    notifications = 0
     author_tweets = Tweet.objects.filter(
         author__username=username).order_by('-id')
     user_tweets = len(author_tweets)
@@ -31,10 +32,12 @@ def user_detail(request, username):
     following_count = len(name.following.all())
     following_status = False
     if request.user.is_authenticated:
+        notifications = len(Notification.objects.filter(
+            user__id=request.user.id, seen=False))
         for user in request.user.following.all():
             if username == user.username:
                 following_status = True
-    return render(request, "user_detail.html", {"author_tweets": author_tweets, 'user_tweets': user_tweets, 'name': name, 'following_status': following_status, 'following_count': following_count})
+    return render(request, "user_detail.html", {"author_tweets": author_tweets, 'user_tweets': user_tweets, 'name': name, 'following_status': following_status, 'following_count': following_count, 'notification_count': notifications})
 
 
 def follow(request, username):
